@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import unicornhat as unicorn
 import WrightFisher
 from time import sleep
