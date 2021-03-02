@@ -72,13 +72,15 @@ class Simulator():
     def mutate(self):
         cell = np.random.randint(0,self.population)
         self.fitness[cell] += np.random.normal(loc=0.,scale=0.1)
-        self.colour[cell] = self.nextColour
-        self.nextColour = (self.nextColour+1)%self.totalColours
+        self.colour[cell] = self.mutantColour
+        self.mutantColour = (self.mutantColour+1)%self.totalColours
     def update(self):
         for cellIndex in range(self.population):
             self.tryReplaceNeighbour(cellIndex)
         self.fitness = np.copy(self.nextFitness)
         self.colour = np.copy(self.nextColour)
+        if self.timer % self.mutationRate == 0:
+            self.mutate()
     def print(self):
         for i in range(self.size):
             for j in range(self.size):
