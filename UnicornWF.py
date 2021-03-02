@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import unicornhat as unicorn
+import unicornhathd as unicorn
 import WrightFisher
 from time import sleep
 
@@ -25,4 +25,9 @@ class UnicornSimulator(WrightFisher.Simulator):
         for _ in range(steps):
             self.update()
             self.project()
+            #self.print()
             sleep(self.wait)
+
+if __name__ == "__main__":
+    grid = UnicornSimulator(16,10,0.1)
+    grid.runAndProject(100000)
