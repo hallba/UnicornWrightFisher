@@ -21,8 +21,8 @@ class UnicornSimulator(WrightFisher.Simulator):
                 colour = colourMap[self.colour[index]]
                 unicorn.set_pixel(i,j,colour[0],colour[1],colour[2])
         unicorn.show()
-    def runAndProject(self,steps):
-        for _ in range(steps):
+    def runAndProject(self):
+        while(True):
             self.update()
             self.project()
             #self.print()
@@ -30,4 +30,4 @@ class UnicornSimulator(WrightFisher.Simulator):
 
 if __name__ == "__main__":
     grid = UnicornSimulator(16,10,0.1)
-    grid.runAndProject(100000)
+    grid.runAndProject()
