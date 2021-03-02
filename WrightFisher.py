@@ -1,4 +1,5 @@
 import numpy as np
+from time import sleep
 
 colourMap = {   0: (0, 0, 0), 
                 1: (255, 0, 0),
@@ -6,7 +7,7 @@ colourMap = {   0: (0, 0, 0),
                 3: (0, 0, 255) }
 
 class Simulator():
-    def __init__(self,size,mutationRate=0):
+    def __init__(self,size,mutationRate=0,wait=1):
         # Generate a grid of black cells initially
         self.size = size
         self.population = size*size
@@ -21,6 +22,8 @@ class Simulator():
 
         self.mutantColour = 1
         self.totalColours = len(colourMap.keys())
+
+        self.wait = wait
 
         '''
                 1
@@ -79,8 +82,9 @@ class Simulator():
             self.tryReplaceNeighbour(cellIndex)
         self.fitness = np.copy(self.nextFitness)
         self.colour = np.copy(self.nextColour)
-        if self.timer % self.mutationRate == 0:
+        if self.mutationRate and self.timer and self.timer % self.mutationRate == 0:
             self.mutate()
+        self.timer += 1
     def print(self):
         for i in range(self.size):
             for j in range(self.size):
@@ -91,3 +95,4 @@ class Simulator():
             self.update()
             self.print()
             print("="*self.size)
+            sleep(self.wait)
