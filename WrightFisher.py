@@ -6,14 +6,22 @@ colourMap = {   0: (0, 0, 0),
                 3: (0, 0, 255) }
 
 class Simulator():
-    def __init__(self,size):
+    def __init__(self,size,mutationRate=0):
         # Generate a grid of black cells initially
         self.size = size
         self.population = size*size
         self.fitness = np.zeros(self.population)
         self.colour = np.zeros(self.population,dtype=int)
-        self.fitness[3+3*self.size] = 1
-        self.colour[3+3*self.size] = 1
+
+        self.nextFitness = np.zeros(self.population)
+        self.nextColour = np.zeros(self.population,dtype=int)
+
+        self.mutationRate = mutationRate
+        self.timer = 0
+
+        self.mutantColour = 1
+        self.totalColours = len(colourMap.keys())
+
         '''
                 1
             4   0   2
@@ -25,7 +33,7 @@ class Simulator():
         else:
             return(currentPosition - self.size)
     def down(self, currentPosition):
-        if currentPosition > (self.size*(self.size-1)):
+        if currentPosition >= (self.size*(self.size-1)):
             return(currentPosition - self.size*(self.size-1))
         else:
             return(currentPosition + self.size)
@@ -42,15 +50,17 @@ class Simulator():
     def replacement(self,source,target):
         if np.random.random() < (0.5 - self.fitness[target] + self.fitness[source]):
             # replaced by upper cell
-            self.fitness[target] = self.fitness[source]
-            self.colour[target] = self.fitness[source]
+            self.nextFitness[target] = self.fitness[source]
+            self.nextColour[target] = self.colour[source]
         else:
-            pass
+            self.nextColour[target] = self.colour[target]
+            self.nextFitness[target] = self.fitness[target]
     def tryReplaceNeighbour(self, currentPosition):
         which = np.random.randint(0,6)
         if which == 0:
             # Do nothing as the cell is the same
-            pass
+            self.nextColour[currentPosition] = self.colour[currentPosition]
+            self.nextFitness[currentPosition] = self.fitness[currentPosition]
         elif which == 1:
             self.replacement(self.up(currentPosition), currentPosition)
         elif which == 2:
@@ -59,15 +69,23 @@ class Simulator():
             self.replacement(self.down(currentPosition), currentPosition)
         else:
             self.replacement(self.left(currentPosition), currentPosition)
+    def mutate(self):
+        cell = np.random.randint(0,self.population)
+        self.fitness[cell] += np.random.normal(loc=0.,scale=0.1)
+        self.colour[cell] = self.nextColour
+        self.nextColour = (self.nextColour+1)%self.totalColours
     def update(self):
         for cellIndex in range(self.population):
             self.tryReplaceNeighbour(cellIndex)
+        self.fitness = np.copy(self.nextFitness)
+        self.colour = np.copy(self.nextColour)
     def print(self):
         for i in range(self.size):
             for j in range(self.size):
-                print(self.colour[i+j*self.size], end='\t')
+                print(self.colour[i+j*self.size], end='')
             print("")
     def runAndPrint(self,steps):
         for _ in range(steps):
             self.update()
             self.print()
+            print("="*self.size)
