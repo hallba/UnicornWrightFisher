@@ -1,22 +1,32 @@
 #!/usr/bin/env python
-import numpy as np
+"""Wright Fisher simulator.
+
+Simulates the growth of clones in a 2D space.
+"""
+
 from time import sleep
 
-colourMap = {   0: (0, 0, 0), 
-                1: (255, 0, 0),
-                2: (0, 255, 0),
-                3: (0, 0, 255) }
+import numpy as np
 
-class Simulator():
-    def __init__(self,size,mutationRate=0,wait=1):
+colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
+
+
+class Simulator:
+    """Simulator for 2D Wright Fisher.
+
+    Simulates and visualises a 2D square.
+    """
+
+    def __init__(self, size, mutationRate=0, wait=1):
+        """Initialise."""
         # Generate a grid of black cells initially
         self.size = size
-        self.population = size*size
+        self.population = size * size
         self.fitness = np.zeros(self.population)
-        self.colour = np.zeros(self.population,dtype=int)
+        self.colour = np.zeros(self.population, dtype=int)
 
         self.nextFitness = np.zeros(self.population)
-        self.nextColour = np.zeros(self.population,dtype=int)
+        self.nextColour = np.zeros(self.population, dtype=int)
 
         self.mutationRate = mutationRate
         self.timer = 0
@@ -26,41 +36,54 @@ class Simulator():
 
         self.wait = wait
 
-        '''
+        """
                 1
             4   0   2
                 3
-        '''
+        """
+
     def up(self, currentPosition):
+        """Return array index of space above currentPosition."""
         if currentPosition < self.size:
-            return(currentPosition + self.size*(self.size-1))
+            return currentPosition + self.size * (self.size - 1)
         else:
-            return(currentPosition - self.size)
+            return currentPosition - self.size
+
     def down(self, currentPosition):
-        if currentPosition >= (self.size*(self.size-1)):
-            return(currentPosition - self.size*(self.size-1))
+        """Return array index of space below currentPosition."""
+        if currentPosition >= (self.size * (self.size - 1)):
+            return currentPosition - self.size * (self.size - 1)
         else:
-            return(currentPosition + self.size)
+            return currentPosition + self.size
+
     def right(self, currentPosition):
-        if currentPosition % (self.size-1) == 0:
-            return(currentPosition-self.size+1)
+        """Return array index of space to right of currentPosition."""
+        if currentPosition % (self.size - 1) == 0:
+            return currentPosition - self.size + 1
         else:
-            return(currentPosition+1)
+            return currentPosition + 1
+
     def left(self, currentPosition):
+        """Return array index of space to left of currentPosition."""
         if currentPosition % self.size == 0:
-            return(currentPosition+self.size-1)
+            return currentPosition + self.size - 1
         else:
-            return(currentPosition-1)
-    def replacement(self,source,target):
-        if np.random.random() < (0.5 - self.fitness[target] + self.fitness[source]):
+            return currentPosition - 1
+
+    def replacement(self, source, target):
+        """Decide whether to replace cell and do it."""
+        probability = 0.5 - self.fitness[target] + self.fitness[source]
+        if np.random.random() < probability:
             # replaced by upper cell
             self.nextFitness[target] = self.fitness[source]
             self.nextColour[target] = self.colour[source]
         else:
             self.nextColour[target] = self.colour[target]
             self.nextFitness[target] = self.fitness[target]
+
     def tryReplaceNeighbour(self, currentPosition):
-        which = np.random.randint(0,6)
+        """Pick a neighbour to try replace a cell and run replacement."""
+        which = np.random.randint(0, 6)
         if which == 0:
             # Do nothing as the cell is the same
             self.nextColour[currentPosition] = self.colour[currentPosition]
@@ -73,27 +96,36 @@ class Simulator():
             self.replacement(self.down(currentPosition), currentPosition)
         else:
             self.replacement(self.left(currentPosition), currentPosition)
+
     def mutate(self):
-        cell = np.random.randint(0,self.population)
-        self.fitness[cell] += np.random.normal(loc=0.,scale=0.1)
+        """Select a random cell and change fitness and colour."""
+        cell = np.random.randint(0, self.population)
+        self.fitness[cell] += np.random.normal(loc=0.0, scale=0.1)
         self.colour[cell] = self.mutantColour
-        self.mutantColour = (self.mutantColour+1)%self.totalColours
+        self.mutantColour = (self.mutantColour + 1) % self.totalColours
+
     def update(self):
+        """Update entire population."""
         for cellIndex in range(self.population):
             self.tryReplaceNeighbour(cellIndex)
         self.fitness = np.copy(self.nextFitness)
         self.colour = np.copy(self.nextColour)
-        if self.mutationRate and self.timer and self.timer % self.mutationRate == 0:
+        mutating = self.mutationRate and self.timer
+        if mutating and self.timer % self.mutationRate == 0:
             self.mutate()
         self.timer += 1
-    def print(self):
+
+    def printColours(self):
+        """Print colours to screen."""
         for i in range(self.size):
             for j in range(self.size):
-                print(self.colour[i+j*self.size], end='')
+                print(self.colour[i + j * self.size], end="")
             print("")
-    def runAndPrint(self,steps):
+
+    def runAndPrint(self, steps):
+        """Update for several steps, printing at each step."""
         for _ in range(steps):
             self.update()
-            self.print()
-            print("="*self.size)
+            self.printColours()
+            print("=" * self.size)
             sleep(self.wait)
