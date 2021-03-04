@@ -1,0 +1,3 @@
+unicorn-hat-sim
+numpy
+opencv-python
