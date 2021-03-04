@@ -8,16 +8,13 @@ from time import sleep
 
 import numpy as np
 
-colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
-
-
 class Simulator:
     """Simulator for 2D Wright Fisher.
 
     Simulates and visualises a 2D square.
     """
 
-    def __init__(self, size, mutationRate=0, wait=1):
+    def __init__(self, size, mutationRate=0, wait=1, numberColours=4):
         """Initialise."""
         # Generate a grid of black cells initially
         self.size = size
@@ -32,7 +29,7 @@ class Simulator:
         self.timer = 0
 
         self.mutantColour = 1
-        self.totalColours = len(colourMap.keys())
+        self.totalColours = numberColours
 
         self.wait = wait
 
@@ -97,12 +94,16 @@ class Simulator:
         else:
             self.replacement(self.left(currentPosition), currentPosition)
 
+    def colourUpdate(self):
+        """Change the colour to the next colour, wrapping if appropriate."""
+        self.mutantColour = (self.mutantColour + 1) % self.totalColours
+
     def mutate(self):
         """Select a random cell and change fitness and colour."""
         cell = np.random.randint(0, self.population)
         self.fitness[cell] += np.random.normal(loc=0.0, scale=0.1)
         self.colour[cell] = self.mutantColour
-        self.mutantColour = (self.mutantColour + 1) % self.totalColours
+        self.colourUpdate()
 
     def update(self):
         """Update entire population."""
