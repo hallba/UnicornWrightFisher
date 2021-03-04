@@ -5,6 +5,10 @@ Visualises the growth of clones on a unicorn hathd.
 """
 from time import sleep
 
+import numpy as np
+
+import cv2
+
 import WrightFisher
 
 try:
@@ -38,12 +42,25 @@ class UnicornSimulator(WrightFisher.Simulator):
 
     def project(self):
         """Take the grid colours and visualise them on the matrix."""
-        for i in range(self.size):
-            for j in range(self.size):
-                index = i + j * self.size
-                colour = self.colourMap[self.colour[index]]
-                unicorn.set_pixel(i, j, colour[0], colour[1], colour[2])
-        unicorn.show()
+        if self.size == 16:
+            #no scaling necessary
+            for i in range(self.size):
+                for j in range(self.size):
+                    index = i + j * self.size
+                    colour = self.colourMap[self.colour[index]]
+                    unicorn.set_pixel(i, j, colour[0], colour[1], colour[2])
+            unicorn.show()
+        else:
+            def colourConvert(index):
+                return(self.colourMap[self.colour[index]])
+            cMat = [ [ colourConvert(x + y * self.size) for y in range(self.size)] for x in range(self.size)]
+            img = np.array(cMat, dtype=float)
+            res = cv2.resize(img, dsize=(16, 16))
+            for i in range(16):
+                for j in range(16):
+                    index = i + j * self.size
+                    unicorn.set_pixel(i, j, res[i,j,0], res[i,j,1], res[i,j,2])
+            unicorn.show()
 
     def runAndProject(self):
         """Run simulations indefinitely, projecting to the matrix."""
