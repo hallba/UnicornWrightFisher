@@ -17,7 +17,6 @@ unicorn.rotation(0)
 unicorn.brightness(0.5)
 width, height = unicorn.get_shape()
 
-colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
 
 
 class UnicornSimulator(WrightFisher.Simulator):
@@ -25,13 +24,23 @@ class UnicornSimulator(WrightFisher.Simulator):
 
     Simulates and visualises a 2D square in an LED matrix.
     """
+    def specificInit(self):
+        """We need a map between 'colours' and RGB values for display."""
+        self.pickColours()
+        # each colour must be a key to an RGB value
+        for i in range(self.totalColours):
+            assert i in self.colourMap.keys()
+
+    def pickColours(self):
+        """Create colourMap dict, mapping 'colours' to RGB."""
+        self.colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
 
     def project(self):
         """Take the grid colours and visualise them on the matrix."""
         for i in range(self.size):
             for j in range(self.size):
                 index = i + j * self.size
-                colour = colourMap[self.colour[index]]
+                colour = self.colourMap[self.colour[index]]
                 unicorn.set_pixel(i, j, colour[0], colour[1], colour[2])
         unicorn.show()
 
@@ -42,7 +51,11 @@ class UnicornSimulator(WrightFisher.Simulator):
             self.project()
             sleep(self.wait)
 
+class CMYKUnicorn(UnicornSimulator):
+    def pickColours(self):
+        """Create colourMap dict, mapping 'colours' to RGB."""
+        self.colourMap = {0: (0, 0, 0), 1: (0, 255, 255), 2: (255, 0, 255), 3: (225, 225, 0)}
 
 if __name__ == "__main__":
-    grid = UnicornSimulator(16, 10, 0.1)
+    grid = CMYKUnicorn(16, 10, 0.1)
     grid.runAndProject()

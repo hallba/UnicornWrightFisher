@@ -33,12 +33,14 @@ class Simulator:
 
         self.wait = wait
 
+        self.specificInit()
         """
                 1
             4   0   2
                 3
         """
-
+    def specificInit(self):
+        pass
     def up(self, currentPosition):
         """Return array index of space above currentPosition."""
         if currentPosition < self.size:
