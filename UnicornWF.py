@@ -7,7 +7,10 @@ from time import sleep
 
 import WrightFisher
 
-import unicornhathd as unicorn
+try:
+    import unicornhathd as unicorn
+except ImportError:
+    from unicorn_hat_sim import unicornhathd as unicorn
 
 unicorn.set_layout(unicorn.AUTO)
 unicorn.rotation(0)
