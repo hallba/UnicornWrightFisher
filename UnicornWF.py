@@ -51,11 +51,19 @@ class UnicornSimulator(WrightFisher.Simulator):
             self.project()
             sleep(self.wait)
 
+
 class CMYKUnicorn(UnicornSimulator):
     def pickColours(self):
-        """Create colourMap dict, mapping 'colours' to RGB."""
+        """Create colourMap dict, mapping 'colours' to CMYK."""
         self.colourMap = {0: (0, 0, 0), 1: (0, 255, 255), 2: (255, 0, 255), 3: (225, 225, 0)}
 
+
+class GreyScaleUnicorn(UnicornSimulator):
+    def pickColours(self):
+        """Create colourMap dict with different shades of grey"""
+        step = 255//self.totalColours
+        self.colourMap = {k:(step*k, step*k, step*k) for k in range(self.totalColours)}
+
 if __name__ == "__main__":
-    grid = CMYKUnicorn(16, 10, 0.1)
+    grid = GreyScaleUnicorn(16, 10, 0.1, numberColours=50)
     grid.runAndProject()
