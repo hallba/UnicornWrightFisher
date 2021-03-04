@@ -27,6 +27,7 @@ class UnicornSimulator(WrightFisher.Simulator):
     def specificInit(self):
         """We need a map between 'colours' and RGB values for display."""
         self.pickColours()
+        assert self.totalColours == len(self.colourMap.keys())
         # each colour must be a key to an RGB value
         for i in range(self.totalColours):
             assert i in self.colourMap.keys()
@@ -65,5 +66,5 @@ class GreyScaleUnicorn(UnicornSimulator):
         self.colourMap = {k:(step*k, step*k, step*k) for k in range(self.totalColours)}
 
 if __name__ == "__main__":
-    grid = GreyScaleUnicorn(16, 10, 0.1, numberColours=50)
+    grid = UnicornSimulator(16, 10, 0.1)
     grid.runAndProject()
