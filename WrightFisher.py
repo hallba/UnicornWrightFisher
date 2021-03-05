@@ -14,7 +14,7 @@ class Simulator:
     Simulates and visualises a 2D square.
     """
 
-    def __init__(self, size, mutationRate=0, wait=1, numberColours=4):
+    def __init__(self, size, mutationRate=0, wait=1, numberColours=4, advantage=0):
         """Initialise."""
         # Generate a grid of black cells initially
         self.size = size
@@ -27,6 +27,7 @@ class Simulator:
 
         self.mutationRate = mutationRate
         self.timer = 0
+        self.advantage = advantage
 
         self.mutantColour = 1
         self.totalColours = numberColours
@@ -103,7 +104,7 @@ class Simulator:
     def mutate(self, colour=None):
         """Select a random cell and change fitness and colour."""
         cell = np.random.randint(0, self.population)
-        self.fitness[cell] += np.random.normal(loc=0.0, scale=0.1)
+        self.fitness[cell] += np.random.normal(loc=self.advantage, scale=0.1)
         if colour == None:
             self.colour[cell] = self.mutantColour
         else:
