@@ -100,11 +100,14 @@ class Simulator:
         """Change the colour to the next colour, wrapping if appropriate."""
         self.mutantColour = (self.mutantColour + 1) % self.totalColours
 
-    def mutate(self):
+    def mutate(self, colour=None):
         """Select a random cell and change fitness and colour."""
         cell = np.random.randint(0, self.population)
         self.fitness[cell] += np.random.normal(loc=0.0, scale=0.1)
-        self.colour[cell] = self.mutantColour
+        if colour == None:
+            self.colour[cell] = self.mutantColour
+        else:
+            self.colour[cell] = colour
         self.colourUpdate()
 
     def update(self):
