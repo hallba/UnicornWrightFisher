@@ -14,7 +14,7 @@ class Simulator:
     Simulates and visualises a 2D square.
     """
 
-    def __init__(self, size, mutationRate=0, wait=1, numberColours=4, advantage=0):
+    def __init__(self, size, mutationRate=0, wait=1, numberColours=4, advantage=0, special=None):
         """Initialise."""
         # Generate a grid of black cells initially
         self.size = size
@@ -34,6 +34,7 @@ class Simulator:
 
         self.wait = wait
 
+        self.special = special # parameters that can be specialised
         self.specificInit()
         """
                 1

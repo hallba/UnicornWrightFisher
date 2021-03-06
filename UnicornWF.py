@@ -38,7 +38,10 @@ class UnicornSimulator(WrightFisher.Simulator):
 
     def pickColours(self):
         """Create colourMap dict, mapping 'colours' to RGB."""
-        self.colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
+        if self.special == None or "colourMap" not in self.special:
+            self.colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
+        else:
+            self.colourMap = self.special["colourMap"]
 
     def project(self):
         """Take the grid colours and visualise them on the matrix."""
