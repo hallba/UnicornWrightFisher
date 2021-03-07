@@ -31,15 +31,12 @@ class UnicornSimulator(WrightFisher.Simulator):
     def specificInit(self):
         """We need a map between 'colours' and RGB values for display."""
         self.pickColours()
-        assert self.totalColours == len(self.colourMap.keys())
-        # each colour must be a key to an RGB value
-        for i in range(self.totalColours):
-            assert i in self.colourMap.keys()
+        assert self.totalColours <= len(self.colourMap)
 
     def pickColours(self):
         """Create colourMap dict, mapping 'colours' to RGB."""
         if self.special == None or "colourMap" not in self.special:
-            self.colourMap = {0: (0, 0, 0), 1: (255, 0, 0), 2: (0, 255, 0), 3: (0, 0, 255)}
+            self.colourMap = [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)]
         else:
             self.colourMap = self.special["colourMap"]
 
@@ -78,7 +75,7 @@ class CMYKUnicorn(UnicornSimulator):
     """Unicorn Simulator that displays CMYK instead of RBG+Black."""
     def pickColours(self):
         """Create colourMap dict, mapping 'colours' to CMYK."""
-        self.colourMap = {0: (0, 0, 0), 1: (0, 255, 255), 2: (255, 0, 255), 3: (225, 225, 0)}
+        self.colourMap = [(0, 0, 0), (0, 255, 255), (255, 0, 255),  (225, 225, 0)]
 
 
 class GreyScaleUnicorn(UnicornSimulator):
@@ -86,7 +83,7 @@ class GreyScaleUnicorn(UnicornSimulator):
     def pickColours(self):
         """Create colourMap dict with different shades of grey"""
         step = 255//self.totalColours
-        self.colourMap = {k:(step*k, step*k, step*k) for k in range(self.totalColours)}
+        self.colourMap = [(step*k, step*k, step*k) for k in range(self.totalColours)]
     def colourUpdate(self):
         """Change the colour to the next colour, switch to count down if appropriate."""
         if not hasattr(self, 'goingDown'):
