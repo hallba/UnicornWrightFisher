@@ -160,6 +160,7 @@ class Simulator:
             print("=" * self.width)
             sleep(self.wait)
 
-grid = Simulator(5,2)
-grid.runAndPrint(100)
+if __name__=="__main__":
+    grid = Simulator(w,2,height=h)
+    grid.runAndPrint(100)
 
