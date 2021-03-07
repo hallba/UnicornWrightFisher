@@ -56,9 +56,9 @@ class UnicornSimulator(WrightFisher.Simulator):
                 return(self.colourMap[self.colour[index]])
             cMat = [[colourConvert(x + y * self.size) for y in range(self.size)] for x in range(self.size)]
             img = np.array(cMat, dtype=float)
-            res = cv2.resize(img, dsize=(16, 16))
-            for i in range(16):
-                for j in range(16):
+            res = cv2.resize(img, dsize=(width, height))
+            for i in range(width):
+                for j in range(height):
                     index = i + j * self.size
                     unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
             unicorn.show()
