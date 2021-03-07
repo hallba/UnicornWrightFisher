@@ -42,11 +42,11 @@ class UnicornSimulator(WrightFisher.Simulator):
 
     def project(self):
         """Take the grid colours and visualise them on the matrix."""
-        if self.size == 16:
+        if self.height == height and self.width == width:
             # no scaling necessary
-            for i in range(self.size):
-                for j in range(self.size):
-                    index = i + j * self.size
+            for i in range(self.width):
+                for j in range(self.height):
+                    index = i + j * self.width
                     colour = self.colourMap[self.colour[index]]
                     unicorn.set_pixel(i, j, colour[0], colour[1], colour[2])
             unicorn.show()
@@ -54,12 +54,12 @@ class UnicornSimulator(WrightFisher.Simulator):
             def colourConvert(index):
                 """Convert an index into its colour."""
                 return(self.colourMap[self.colour[index]])
-            cMat = [[colourConvert(x + y * self.size) for y in range(self.size)] for x in range(self.size)]
+            cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
             img = np.array(cMat, dtype=float)
             res = cv2.resize(img, dsize=(width, height))
             for i in range(width):
                 for j in range(height):
-                    index = i + j * self.size
+                    index = i + j * self.width
                     unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
             unicorn.show()
 
