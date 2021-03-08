@@ -6,7 +6,11 @@ Simulates the growth of clones in a 2D space.
 
 from time import sleep
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    import numpyReplace as np
+
 
 class Simulator:
     """Simulator for 2D Wright Fisher.
