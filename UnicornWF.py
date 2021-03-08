@@ -5,22 +5,45 @@ Visualises the growth of clones on a unicorn hathd.
 """
 from time import sleep
 
-import cv2
+try:
+    import cv2
+    openCVAvailable = True
+except ImportError:
+    openCVAvailable = False
 
 import WrightFisher
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    import numpyReplace as np
 
 try:
     import unicornhathd as unicorn
+    pico = False
+    pi = True
+    unicorn.set_layout(unicorn.AUTO)
+    unicorn.rotation(0)
+    unicorn.brightness(0.5)
+    width, height = unicorn.get_shape()
 except ImportError:
-    from unicorn_hat_sim import unicornhathd as unicorn
-
-unicorn.set_layout(unicorn.AUTO)
-unicorn.rotation(0)
-unicorn.brightness(0.5)
-width, height = unicorn.get_shape()
-
+    try:
+        import picounicorn as unicorn
+        from machine import Pin
+        unicorn.init()
+        width = unicorn.get_width()
+        height = unicorn.get_height()
+        led = Pin(25, Pin.OUT)
+        pico = True
+        pi = False
+    except ImportError:
+        pico = False
+        pi = False
+        from unicorn_hat_sim import unicornhathd as unicorn
+        unicorn.set_layout(unicorn.AUTO)
+        unicorn.rotation(0)
+        unicorn.brightness(0.5)
+        width, height = unicorn.get_shape()
 
 class UnicornSimulator(WrightFisher.Simulator):
     """Simulator for 2D Wright Fisher.
@@ -49,25 +72,31 @@ class UnicornSimulator(WrightFisher.Simulator):
                     index = i + j * self.width
                     colour = self.colourMap[self.colour[index]]
                     unicorn.set_pixel(i, j, colour[0], colour[1], colour[2])
-            unicorn.show()
+            if not pico:
+                unicorn.show()
         else:
-            def colourConvert(index):
-                """Convert an index into its colour."""
-                return(self.colourMap[self.colour[index]])
-            cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
-            img = np.array(cMat, dtype=float)
-            res = cv2.resize(img, dsize=(width, height))
-            for i in range(width):
-                for j in range(height):
-                    index = i + j * self.width
-                    unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
-            unicorn.show()
+            if openCVAvailable:
+                def colourConvert(index):
+                    """Convert an index into its colour."""
+                    return(self.colourMap[self.colour[index]])
+                cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
+                img = np.array(cMat, dtype=float)
+                res = cv2.resize(img, dsize=(width, height))
+                for i in range(width):
+                    for j in range(height):
+                        index = i + j * self.width
+                        unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
+                unicorn.show()
+            else:
+                pass # we should do something different here, not sure what
 
     def runAndProject(self):
         """Run simulations indefinitely, projecting to the matrix."""
         while True:
             self.update()
             self.project()
+            if pico:
+                led.toggle()
             sleep(self.wait)
 
 
@@ -105,5 +134,5 @@ class GreyScaleUnicorn(UnicornSimulator):
                 self.mutantColour += 1
 
 if __name__ == "__main__":
-    grid = UnicornSimulator(16, 10, 0.1)
+    grid = UnicornSimulator(width, 10, 0.1, height=height)
     grid.runAndProject()
