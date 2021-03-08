@@ -20,8 +20,8 @@ class rng():
     def randint(self, lower, upper):
         # numpy does not include the upper bound, random does
         return(rnd.randint(lower, (upper-1)))
-    def random(self, lower=0, upper=1):
-        return(rnd.random(lower, upper))
+    def random(self):
+        return(rnd.random())
     def normal(self, loc=0, scale=1):
         # not like for like. Revisit
         return(rnd.uniform((loc-scale*3/2), (loc+scale*3/2)))
