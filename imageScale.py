@@ -13,7 +13,7 @@ def tripletAverage(sample):
     return(average)
 
 def collectAndAverageSamples(original, x, y, widthRatio, heightRatio):
-    return(tripletAverage([original[widthRatio*x+i][heightRatio*y+j] \
+   return(tripletAverage([original[widthRatio*x+j][heightRatio*y+i] \
         for i in range(heightRatio) for j in range(widthRatio)]))
 
 def downScaleImage(original, newWidth, newHeight):
