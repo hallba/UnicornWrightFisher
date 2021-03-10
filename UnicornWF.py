@@ -10,6 +10,7 @@ try:
     openCVAvailable = True
 except ImportError:
     openCVAvailable = False
+    import imageScale
 
 import WrightFisher
 
@@ -86,9 +87,17 @@ class UnicornSimulator(WrightFisher.Simulator):
                     for j in range(height):
                         index = i + j * self.width
                         unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
-                unicorn.show()
+                if not pico: 
+                    unicorn.show()
             else:
-                pass # we should do something different here, not sure what
+                cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
+                res = imageScale.downScaleImage(cMat,self.width,self.height)
+                for i in range(width):
+                    for j in range(height):
+                        index = i + j * self.width
+                        unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
+                if not pico:
+                    unicorn.show()
 
     def runAndProject(self):
         """Run simulations indefinitely, projecting to the matrix."""
