@@ -27,6 +27,7 @@ try:
     unicorn.rotation(0)
     unicorn.brightness(0.5)
     width, height = unicorn.get_shape()
+    print("Running on unicornhathd")
 except ImportError:
     try:
         import picounicorn as unicorn
@@ -37,6 +38,7 @@ except ImportError:
         led = Pin(25, Pin.OUT)
         pico = True
         pi = False
+        print("Running on pico")
     except ImportError:
         pico = False
         pi = False
@@ -45,6 +47,7 @@ except ImportError:
         unicorn.rotation(0)
         unicorn.brightness(0.5)
         width, height = unicorn.get_shape()
+        print("Running on simulator")
 
 class UnicornSimulator(WrightFisher.Simulator):
     """Simulator for 2D Wright Fisher.
@@ -76,10 +79,10 @@ class UnicornSimulator(WrightFisher.Simulator):
             if not pico:
                 unicorn.show()
         else:
+            def colourConvert(index):
+                """Convert an index into its colour."""
+                return(self.colourMap[self.colour[index]])
             if openCVAvailable:
-                def colourConvert(index):
-                    """Convert an index into its colour."""
-                    return(self.colourMap[self.colour[index]])
                 cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
                 img = np.array(cMat, dtype=float)
                 res = cv2.resize(img, dsize=(width, height))
@@ -91,11 +94,19 @@ class UnicornSimulator(WrightFisher.Simulator):
                     unicorn.show()
             else:
                 cMat = [[colourConvert(x + y * self.width) for y in range(self.height)] for x in range(self.width)]
-                res = imageScale.downScaleImage(cMat,self.width,self.height)
+                res = imageScale.downScaleImage(cMat,width,height)
                 for i in range(width):
                     for j in range(height):
                         index = i + j * self.width
-                        unicorn.set_pixel(i, j, res[i, j, 0], res[i, j, 1], res[i, j, 2])
+                        if pico:
+                            r = int(res[i][j][0])
+                            g = int(res[i][j][1])
+                            b = int(res[i][j][2])
+                        else:
+                            r = res[i, j, 0]
+                            g = res[i, j, 1]
+                            b = res[i, j, 2]
+                        unicorn.set_pixel(i, j, r, g, b)
                 if not pico:
                     unicorn.show()
 
