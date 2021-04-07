@@ -52,7 +52,7 @@ class splashScreen():
         # Ask the loaded font how big our text will be
         self.text_width, self.text_height = font.getsize(self.text)
         # Make sure we accommodate enough width to account for our text_x left offset
-        self.text_width += width + text_x
+        self.text_width += self.width + text_x
         # Now let's create a blank canvas wide enough to accomodate our text
         self.image = Image.new('RGB', (self.text_width, max(height, self.text_height)), (0, 0, 0))
         # To draw on our image, we must use PIL's ImageDraw
