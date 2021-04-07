@@ -1,6 +1,8 @@
 
 #!/usr/bin/env python
 
+#Based on pimoroni example, licensed under MIT
+
 import colorsys
 import time
 from sys import exit
@@ -36,7 +38,7 @@ class splashScreen():
             self.font = macFont
         self.rainbow = rainbow
         unicornhathd.rotation(rotation)
-        
+
         self.prepareImage()
         self.show()
         #unicornhathd.off()
