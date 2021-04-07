@@ -7,6 +7,9 @@ Mutations are induced by button presses.
 Currently untested.
 """
 
+import splash
+splash.splashScreen("CloneWars!")
+
 import signal                   
 import sys
 import RPi.GPIO as GPIO
