@@ -42,7 +42,7 @@ class splashScreen():
         #unicornhathd.off()
 
     def prepareImage(self):
-        width, height = unicornhathd.get_shape()
+        self.width, self.height = unicornhathd.get_shape()
         unicornhathd.rotation(0)
         unicornhathd.brightness(0.5)
         text_x = 1
@@ -65,8 +65,8 @@ class splashScreen():
         # The value "scroll" denotes how far this window is from the left of the image.
         # Since the window is "width" pixels wide (16 for UHHD) and we don't want it to run off the end of the,
         # image, we subtract "width".
-        for scroll in range(self.text_width - width):
-            for x in range(width):
+        for scroll in range(self.text_width - self.width):
+            for x in range(self.width):
 
                 # Figure out what hue value we want at this point.
                 # "x" is the position of the pixel on Unicorn HAT HD from 0 to 15
@@ -86,7 +86,7 @@ class splashScreen():
                 # Since our rainbow runs from left to right along the x axis, we can calculate it once
                 # for every vertical line on the display, and then re-use that value 16 times below:
 
-                for y in range(height):
+                for y in range(self.height):
                     # Get the r, g, b colour triplet from pixel x,y of our text image
                     # Our text is white on a black background, so these will all be shades of black/grey/white
                     # ie 255,255,255 or 0,0,0 or 128,128,128
@@ -107,9 +107,9 @@ class splashScreen():
 
                     # Finally we colour in our finished pixel on Unicorn HAT HD
                     if self.rainbow:
-                        unicornhathd.set_pixel(width - 1 - x, y, r, g, b)
+                        unicornhathd.set_pixel(self.width - 1 - x, y, r, g, b)
                     else:
-                        unicornhathd.set_pixel(width - 1 - x, y, pixel[0], pixel[1], pixel[2])
+                        unicornhathd.set_pixel(self.width - 1 - x, y, pixel[0], pixel[1], pixel[2])
 
             # Finally, for each step in our scroll, we show the result on Unicorn HAT HD
             unicornhathd.show()
