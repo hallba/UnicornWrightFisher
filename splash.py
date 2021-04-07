@@ -16,11 +16,10 @@ try:
 except ImportError:
     pi = False
     from unicorn_hat_sim import unicornhathd
+    print("Running on simulator")
     unicornhathd.set_layout(unicornhathd.AUTO)
     unicornhathd.rotation(0)
     unicornhathd.brightness(0.5)
-    width, height = unicornhathd.get_shape()
-    print("Running on simulator")
 
 class splashScreen():
     def __init__(self, text=None, rainbow=True):
@@ -36,7 +35,9 @@ class splashScreen():
         else:
             self.font = macFont
         self.rainbow = rainbow
-        
+        print(unicornhathd.get_rotation()) 
+        unicornhathd.rotation(180)
+        print(unicornhathd.get_rotation()) 
         self.prepareImage()
         self.show()
         #unicornhathd.off()
