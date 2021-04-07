@@ -131,3 +131,4 @@ dmypy.json
 *.svg
 .vscode
 pico-go.json
+.ionide/symbolCache.db
