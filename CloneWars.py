@@ -27,7 +27,7 @@ BLACK_BUTTON_GPIO = 25
 GPIO.setmode(GPIO.BCM)
 buttons = [RED_BUTTON_GPIO, BLUE_BUTTON_GPIO, GREEN_BUTTON_GPIO, BLACK_BUTTON_GPIO]
 
-class decayMutation(UnicornSimulator):
+class DecayMutation(UnicornSimulator):
     """Random mutation turns cells black"""
     def mutate(self, colour=0):
         """Select a random cell and change fitness and colour to black."""
