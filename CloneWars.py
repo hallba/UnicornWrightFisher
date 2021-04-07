@@ -11,6 +11,11 @@ import signal
 import sys
 import RPi.GPIO as GPIO
 
+try:
+    import numpy as np
+except ImportError:
+    import numpyReplace as np
+
 from UnicornWF import UnicornSimulator
 
 # Need to check the pin numbers
