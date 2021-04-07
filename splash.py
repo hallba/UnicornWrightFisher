@@ -22,7 +22,7 @@ except ImportError:
     unicornhathd.brightness(0.5)
 
 class splashScreen():
-    def __init__(self, text=None, rainbow=True):
+    def __init__(self, text=None, rainbow=True, rotation=0):
         if text==None:
             self.text = 'Splash screen! Informing you that the program has started!'
         else:
@@ -35,16 +35,14 @@ class splashScreen():
         else:
             self.font = macFont
         self.rainbow = rainbow
-        print(unicornhathd.get_rotation()) 
-        unicornhathd.rotation(180)
-        print(unicornhathd.get_rotation()) 
+        unicornhathd.rotation(rotation)
+        
         self.prepareImage()
         self.show()
         #unicornhathd.off()
 
     def prepareImage(self):
         self.width, self.height = unicornhathd.get_shape()
-        unicornhathd.rotation(0)
         unicornhathd.brightness(0.5)
         text_x = 1
         text_y = 2

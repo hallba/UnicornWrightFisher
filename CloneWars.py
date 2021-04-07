@@ -8,7 +8,7 @@ Currently untested.
 """
 
 import splash
-splash.splashScreen("CloneWars!")
+splash.splashScreen("CloneWars!",rotation=90)
 
 import signal                   
 import sys
